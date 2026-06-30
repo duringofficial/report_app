@@ -78,6 +78,16 @@ export default function HomePage() {
             신고·제보 접수 후 부여받은 접수번호로 처리 상태를 확인하실 수 있습니다.
           </p>
         </div>
+
+        {/* 관리자 전용 - 눈에 안 띄게 */}
+        <div className="text-center mt-10">
+          <Link
+            href="/admin"
+            className="text-xs text-slate-300 hover:text-slate-500 transition-colors"
+          >
+            관리자
+          </Link>
+        </div>
       </section>
     </main>
   )
