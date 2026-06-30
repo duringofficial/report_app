@@ -1,19 +1,6 @@
 import type { Report, ReportCategory, ReportStatus } from './types'
 
-let kvClient: typeof import('@vercel/kv').kv | null = null
-
-async function getKV() {
-  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-    return null
-  }
-  if (!kvClient) {
-    const mod = await import('@vercel/kv')
-    kvClient = mod.kv
-  }
-  return kvClient
-}
-
-// In-memory fallback for local dev (non-persistent)
+// In-memory fallback for local dev
 const memStore = new Map<string, unknown>()
 const memSets = new Map<string, Array<{ score: number; member: string }>>()
 
@@ -40,33 +27,44 @@ const mem = {
   },
 }
 
+async function getRedis() {
+  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN
+  if (!url || !token) return null
+  const { Redis } = await import('@upstash/redis')
+  return new Redis({ url, token })
+}
+
 async function kget<T>(key: string): Promise<T | null> {
-  const kv = await getKV()
-  if (kv) return kv.get<T>(key)
+  const redis = await getRedis()
+  if (redis) return redis.get<T>(key)
   return mem.get<T>(key)
 }
 
 async function kset(key: string, value: unknown): Promise<void> {
-  const kv = await getKV()
-  if (kv) { await kv.set(key, value); return }
+  const redis = await getRedis()
+  if (redis) { await redis.set(key, value); return }
   await mem.set(key, value)
 }
 
 async function kzadd(key: string, entry: { score: number; member: string }): Promise<void> {
-  const kv = await getKV()
-  if (kv) { await kv.zadd(key, entry); return }
+  const redis = await getRedis()
+  if (redis) { await redis.zadd(key, { score: entry.score, member: entry.member }); return }
   await mem.zadd(key, entry)
 }
 
 async function kzrange(key: string, start: number, stop: number, opts?: { rev?: boolean }): Promise<string[]> {
-  const kv = await getKV()
-  if (kv) return kv.zrange(key, start, stop, { rev: opts?.rev })
+  const redis = await getRedis()
+  if (redis) {
+    const result = await redis.zrange(key, start, stop, { rev: opts?.rev })
+    return result as string[]
+  }
   return mem.zrange(key, start, stop, opts)
 }
 
 async function kzcard(key: string): Promise<number> {
-  const kv = await getKV()
-  if (kv) return kv.zcard(key)
+  const redis = await getRedis()
+  if (redis) return redis.zcard(key)
   return mem.zcard(key)
 }
 
