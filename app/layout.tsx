@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: '익명 신고 채널 | KET',
-  description: '안전하고 익명으로 신고하세요. 모든 신고는 철저히 보호됩니다.',
+  title: '신고·제보 채널 | DURING',
+  description: '익명 또는 기명으로 신고·제보하세요. 모든 내용은 철저히 보호됩니다.',
   robots: 'noindex,nofollow',
 }
 

@@ -114,7 +114,32 @@ export default function ReportDetailPage() {
               </div>
             </div>
 
+            {/* 익명/기명 배지 */}
+            <div className="flex items-center gap-2">
+              {report.isAnonymous === false ? (
+                <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-violet-100 text-violet-700">
+                  👤 기명 신고
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500">
+                  🔒 익명 신고
+                </span>
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
+              {report.reporterName && (
+                <div>
+                  <p className="text-xs text-slate-400 mb-1">신고자 이름</p>
+                  <p className="text-sm font-medium text-slate-700">{report.reporterName}</p>
+                </div>
+              )}
+              {report.reporterDept && (
+                <div>
+                  <p className="text-xs text-slate-400 mb-1">신고자 부서</p>
+                  <p className="text-sm font-medium text-slate-700">{report.reporterDept}</p>
+                </div>
+              )}
               {report.incidentDate && (
                 <div>
                   <p className="text-xs text-slate-400 mb-1">발생일</p>

@@ -10,6 +10,9 @@ export type ReportStatus = 'pending' | 'reviewing' | 'completed'
 export interface Report {
   id: string
   category: ReportCategory
+  isAnonymous: boolean
+  reporterName?: string
+  reporterDept?: string
   content: string
   incidentDate?: string
   location?: string

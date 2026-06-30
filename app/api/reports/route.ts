@@ -9,7 +9,7 @@ const VALID_CATEGORIES: ReportCategory[] = ['harassment', 'sexual', 'violence', 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { category, content, incidentDate, location, contact } = body
+    const { category, isAnonymous, reporterName, reporterDept, content, incidentDate, location, contact } = body
 
     if (!category || !VALID_CATEGORIES.includes(category)) {
       return Response.json({ error: '올바른 카테고리를 선택해주세요.' }, { status: 400 })
@@ -17,11 +17,17 @@ export async function POST(request: Request) {
     if (!content || content.trim().length < 10) {
       return Response.json({ error: '내용을 10자 이상 입력해주세요.' }, { status: 400 })
     }
+    if (!isAnonymous && !reporterName?.trim()) {
+      return Response.json({ error: '기명 신고 시 이름을 입력해주세요.' }, { status: 400 })
+    }
 
     const now = Date.now()
     const report = {
       id: generateReportId(),
       category: category as ReportCategory,
+      isAnonymous: isAnonymous !== false,
+      reporterName: !isAnonymous ? reporterName?.trim() : undefined,
+      reporterDept: !isAnonymous ? reporterDept?.trim() || undefined : undefined,
       content: content.trim(),
       incidentDate: incidentDate || undefined,
       location: location?.trim() || undefined,

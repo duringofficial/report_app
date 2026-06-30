@@ -4,7 +4,7 @@ import { listReports, countByCategory } from '@/lib/kv'
 import { CATEGORIES, STATUS_LABELS } from '@/lib/types'
 import type { Report, ReportCategory } from '@/lib/types'
 import Link from 'next/link'
-import { LogOut, BarChart3, FileText, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
+import { LogOut, BarChart3, FileText, Clock, CheckCircle, AlertTriangle, Download } from 'lucide-react'
 
 async function getAdminToken() {
   const cookieStore = await cookies()
@@ -58,6 +58,14 @@ export default async function DashboardPage({
             <p className="text-blue-300 text-xs">KET 익명 신고 채널</p>
           </div>
           <form action="/api/admin/login" method="POST">
+            <div className="flex items-center gap-4">
+            <a
+              href="/api/admin/export"
+              className="flex items-center gap-1.5 text-xs text-blue-200 hover:text-white transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              CSV 내보내기
+            </a>
             <Link
               href="/api/admin/logout"
               className="flex items-center gap-1.5 text-xs text-blue-200 hover:text-white transition-colors"
@@ -65,6 +73,7 @@ export default async function DashboardPage({
               <LogOut className="w-3.5 h-3.5" />
               로그아웃
             </Link>
+          </div>
           </form>
         </div>
       </div>
