@@ -55,7 +55,7 @@ export default async function DashboardPage({
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-white">관리자 대시보드</h1>
-            <p className="text-blue-300 text-xs">KET 익명 신고 채널</p>
+            <p className="text-blue-300 text-xs">DURING 신고·제보 채널</p>
           </div>
           <form action="/api/admin/login" method="POST">
             <div className="flex items-center gap-4">
